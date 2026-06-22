@@ -1,7 +1,10 @@
 target/
 *.class
-.idea/
+*.jar
+*.war
+*.ear
 *.iml
+.idea/
 .vscode/
-.DS_Store
-HELP.md
+*.log
+application-local.properties
