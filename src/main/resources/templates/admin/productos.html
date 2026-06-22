@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos — Admin Saoco</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f5f5f5; }
+        .admin-layout { display: flex; min-height: 100vh; }
+        
+        .sidebar {
+            width: 260px;
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+        }
+        .sidebar-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #333;
+        }
+        .sidebar-menu { list-style: none; }
+        .sidebar-menu li { margin-bottom: 0.5rem; }
+        .sidebar-menu a {
+            color: #aaa;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: #722f37;
+            color: white;
+        }
+        .sidebar-menu .icon { font-size: 1.1rem; }
+        .logout-btn {
+            background: transparent;
+            color: #888;
+            border: 1px solid #444;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .main {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2rem;
+        }
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .main-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+        }
+        .breadcrumb {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: #722f37;
+            color: white;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        .btn-edit {
+            background: #c9a84c;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background: #fafafa;
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            font-weight: 600;
+        }
+        td {
+            padding: 1rem;
+            border-top: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+        }
+        .product-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f5f5f5;
+        }
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .stock-low { color: #dc3545; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">saoco admin</div>
+            <ul class="sidebar-menu">
+                <li><a th:href="@{/admin/dashboard}"><span class="icon">&#128202;</span> Dashboard</a></li>
+                <li><a th:href="@{/admin/productos}" class="active"><span class="icon">&#128142;</span> Productos</a></li>
+                <li><a th:href="@{/admin/pedidos}"><span class="icon">&#128230;</span> Pedidos</a></li>
+                <li><a th:href="@{/admin/mensajes}"><span class="icon">&#9993;</span> Mensajes</a></li>
+                <li style="margin-top: 2rem;">
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="logout-btn">→ Cerrar sesión</button>
+                    </form>
+                </li>
+            </ul>
+        </aside>
+        
+        <main class="main">
+            <div class="main-header">
+                <div>
+                    <p class="breadcrumb">Admin / Productos</p>
+                    <h1>Gestión de Catálogo</h1>
+                </div>
+                <a th:href="@{/admin/productos/nuevo}" class="btn btn-primary">+ Nuevo Perfume</a>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Imagen</th>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="prod : ${productos}">
+                            <td th:text="${prod.id}">1</td>
+                            <td><img th:src="${prod.imagenUrl}" th:alt="${prod.nombre}" class="product-img"></td>
+                            <td th:text="${prod.nombre}">Nombre</td>
+                            <td th:text="${prod.marca}">Marca</td>
+                            <td th:text="${prod.categoria}">Cat</td>
+                            <td th:text="'$ ' + ${#numbers.formatDecimal(prod.precio, 0, 'POINT', 0, 'COMMA')}">$0</td>
+                            <td th:class="${prod.stock < 5} ? 'stock-low' : ''" th:text="${prod.stock}">0</td>
+                            <td>
+                                <span class="badge" th:classappend="${prod.disponible} ? 'badge-success' : 'badge-danger'" 
+                                      th:text="${prod.disponible} ? 'Activo' : 'Agotado'">Activo</span>
+                            </td>
+                            <td>
+                                <a th:href="@{/admin/productos/editar/{id}(id=${prod.id})}" class="btn btn-edit">✎</a>
+                                <a th:href="@{/admin/productos/eliminar/{id}(id=${prod.id})}" 
+                                   class="btn btn-danger" 
+                                   onclick="return confirm('¿Eliminar este producto?')">🗑</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

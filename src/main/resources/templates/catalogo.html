@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo — Saoco Perfumes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a th:href="@{/}" class="logo">
+                <span class="logo-text">saoc<span class="logo-accent">o</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a th:href="@{/}">INICIO</a></li>
+                <li><a th:href="@{/catalogo}" class="active">CATÁLOGO</a></li>
+                <li><a th:href="@{/contacto}">CONTACTO</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="search-box">
+                    <input type="text" placeholder="BUSCAR" id="searchInput">
+                    <span class="search-icon">&#128269;</span>
+                </div>
+                <div class="cart-icon" id="cartIcon">
+                    <span>&#128722;</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <a th:href="@{/login}" class="nav-login" title="Iniciar sesión">
+                    <span>&#128100;</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER CATÁLOGO -->
+    <section class="catalogo-header">
+        <div class="container">
+            <h1 class="page-title">Nuestro Catálogo</h1>
+            <p class="page-subtitle">Descubre nuestra selección de fragancias árabes exclusivas</p>
+        </div>
+    </section>
+
+    <!-- FILTROS -->
+    <section class="filtros-section">
+        <div class="container">
+            <div class="filtros">
+                <button class="filtro-btn active" data-categoria="todos">Todos</button>
+                <button class="filtro-btn" data-categoria="Árabes">Árabes</button>
+                <button class="filtro-btn" data-categoria="Amaderados">Amaderados</button>
+                <button class="filtro-btn" data-categoria="Dulces">Dulces</button>
+                <button class="filtro-btn" data-categoria="Florales">Florales</button>
+                <button class="filtro-btn" data-categoria="Cítricos">Cítricos</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- GRILLA PRODUCTOS -->
+    <section class="catalogo-grid">
+        <div class="container">
+            <div class="productos-grid" id="productosGrid">
+                <div th:each="prod : ${productos}" 
+                     class="producto-card" 
+                     th:data-categoria="${prod.categoria}"
+                     th:data-nombre="${prod.nombre}"
+                     th:data-id="${prod.id}"
+                     th:classappend="${!prod.disponible} ? ' agotado'">
+                    
+                    <div class="producto-badge" th:if="${!prod.disponible}">Agotado</div>
+                    
+                    <div class="producto-img">
+                        <img th:src="${prod.imagenUrl}" th:alt="${prod.nombre}">
+                    </div>
+                    
+                    <div class="producto-info">
+                        <span class="producto-marca" th:text="${prod.marca}">MARCA</span>
+                        <h3 class="producto-nombre" th:text="${prod.nombre}">Nombre</h3>
+                        <p class="producto-precio" th:text="'$ ' + ${#numbers.formatDecimal(prod.precio, 0, 'POINT', 0, 'COMMA')}">$180.000</p>
+                        
+                        <button th:if="${prod.disponible}" 
+                                type="button"
+                                class="btn btn-add-cart"
+                                th:data-id="${prod.id}"
+                                th:data-nombre="${prod.nombre}"
+                                th:data-marca="${prod.marca}"
+                                th:data-precio="${prod.precio}"
+                                th:data-imagen="${prod.imagenUrl}">
+                            Agregar al carrito
+                        </button>
+                        <span th:if="${!prod.disponible}" class="btn btn-agotado">Agotado</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-logo">saoco</p>
+            <p>Fragancias árabes en Colombia &#127464;&#127476;</p>
+            <p class="footer-copy"> 2024 Saoco Perfumes. Bogotá & Cúcuta.</p>
+        </div>
+    </footer>
+
+    <!-- CARRITO SIDEBAR -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Tu Carrito</h3>
+            <button type="button" class="cart-close" id="cartClose">&#10005;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p class="cart-empty">Tu carrito está vacío</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">$0</span>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" id="btnCheckout">Hacer compra</button>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <!-- MODAL CHECKOUT -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-checkout">
+            <button type="button" class="modal-close" onclick="cerrarModalCheckout()">&#10005;</button>
+            <h3 class="modal-title">Entrega</h3>
+            
+            <div class="modal-field full-width">
+                <label>País / Región</label>
+                <select disabled>
+                    <option>Colombia</option>
+                </select>
+            </div>
+            
+            <div class="modal-row">
+                <div class="modal-field">
+                    <label>Nombre <span class="required">*</span></label>
+                    <input type="text" id="modalNombre" placeholder="Nombre" required>
+                </div>
+                <div class="modal-field">
+                    <label>Apellidos <span class="required">*</span></label>
+                    <input type="text" id="modalApellidos" placeholder="Apellidos" required>
+                </div>
+            </div>
+            
+            <div class="modal-field full-width">
+                <label>Dirección <span class="required">*</span></label>
+                <input type="text" id="modalDireccion" placeholder="Dirección" required>
+            </div>
+            
+            <div class="modal-field full-width">
+                <label>Casa, apartamento, etc. (opcional)</label>
+                <input type="text" id="modalCasa" placeholder="Apto 101, Torre 2...">
+            </div>
+            
+            <div class="modal-row">
+                <div class="modal-field">
+                    <label>Ciudad <span class="required">*</span></label>
+                    <input type="text" id="modalCiudad" placeholder="Ciudad" required>
+                </div>
+                <div class="modal-field">
+                    <label>Provincia / Estado <span class="required">*</span></label>
+                    <select id="modalProvincia" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="Amazonas">Amazonas</option>
+                        <option value="Antioquia">Antioquia</option>
+                        <option value="Arauca">Arauca</option>
+                        <option value="Atlántico">Atlántico</option>
+                        <option value="Bogotá D.C.">Bogotá D.C.</option>
+                        <option value="Bolívar">Bolívar</option>
+                        <option value="Boyacá">Boyacá</option>
+                        <option value="Caldas">Caldas</option>
+                        <option value="Caquetá">Caquetá</option>
+                        <option value="Casanare">Casanare</option>
+                        <option value="Cauca">Cauca</option>
+                        <option value="Cesar">Cesar</option>
+                        <option value="Chocó">Chocó</option>
+                        <option value="Córdoba">Córdoba</option>
+                        <option value="Cundinamarca">Cundinamarca</option>
+                        <option value="Guainía">Guainía</option>
+                        <option value="Guaviare">Guaviare</option>
+                        <option value="Huila">Huila</option>
+                        <option value="La Guajira">La Guajira</option>
+                        <option value="Magdalena">Magdalena</option>
+                        <option value="Meta">Meta</option>
+                        <option value="Nariño">Nariño</option>
+                        <option value="Norte de Santander">Norte de Santander</option>
+                        <option value="Putumayo">Putumayo</option>
+                        <option value="Quindío">Quindío</option>
+                        <option value="Risaralda">Risaralda</option>
+                        <option value="San Andrés y Providencia">San Andrés y Providencia</option>
+                        <option value="Santander">Santander</option>
+                        <option value="Sucre">Sucre</option>
+                        <option value="Tolima">Tolima</option>
+                        <option value="Valle del Cauca">Valle del Cauca</option>
+                        <option value="Vaupés">Vaupés</option>
+                        <option value="Vichada">Vichada</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="modal-row">
+                <div class="modal-field">
+                    <label>Código postal (opcional)</label>
+                    <input type="text" id="modalCodigo" placeholder="Código postal">
+                </div>
+                <div class="modal-field">
+                    <label>Teléfono <span class="required">*</span></label>
+                    <input type="tel" id="modalTelefono" placeholder="300 123 4567" required>
+                </div>
+            </div>
+            
+            <div class="modal-total">
+                <span class="modal-total-label">Total</span>
+                <span class="modal-total-amount" id="modalTotal">$0</span>
+            </div>
+            
+            <button type="button" class="btn-hacer-pedido" onclick="hacerPedidoModal()">Hacer pedido</button>
+        </div>
+    </div>
+
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

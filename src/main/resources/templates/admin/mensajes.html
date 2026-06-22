@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensajes — Admin Saoco</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f5f5f5; }
+        .admin-layout { display: flex; min-height: 100vh; }
+        
+        .sidebar {
+            width: 260px;
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+        }
+        .sidebar-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #333;
+        }
+        .sidebar-menu { list-style: none; }
+        .sidebar-menu li { margin-bottom: 0.5rem; }
+        .sidebar-menu a {
+            color: #aaa;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: #722f37;
+            color: white;
+        }
+        .sidebar-menu .icon { font-size: 1.1rem; }
+        .logout-btn {
+            background: transparent;
+            color: #888;
+            border: 1px solid #444;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .main {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2rem;
+        }
+        .main-header {
+            margin-bottom: 2rem;
+        }
+        .main-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+        }
+        .breadcrumb {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .msg-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-left: 4px solid #722f37;
+        }
+        .msg-card.leido {
+            border-left-color: #ccc;
+            opacity: 0.7;
+        }
+        .msg-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+        .msg-name {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .msg-contact {
+            color: #888;
+            font-size: 0.85rem;
+        }
+        .msg-date {
+            color: #888;
+            font-size: 0.8rem;
+        }
+        .msg-text {
+            color: #444;
+            line-height: 1.6;
+        }
+        .msg-actions {
+            margin-top: 1rem;
+            text-align: right;
+        }
+        .btn-mark {
+            background: #722f37;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">saoco admin</div>
+            <ul class="sidebar-menu">
+                <li><a th:href="@{/admin/dashboard}"><span class="icon">&#128202;</span> Dashboard</a></li>
+                <li><a th:href="@{/admin/productos}"><span class="icon">&#128142;</span> Productos</a></li>
+                <li><a th:href="@{/admin/pedidos}"><span class="icon">&#128230;</span> Pedidos</a></li>
+                <li><a th:href="@{/admin/mensajes}" class="active"><span class="icon">&#9993;</span> Mensajes</a></li>
+                <li style="margin-top: 2rem;">
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="logout-btn">→ Cerrar sesión</button>
+                    </form>
+                </li>
+            </ul>
+        </aside>
+        
+        <main class="main">
+            <div class="main-header">
+                <p class="breadcrumb">Admin / Mensajes</p>
+                <h1>Mensajes de Contacto</h1>
+            </div>
+            
+            <div th:each="msg : ${mensajes}" 
+                 class="msg-card" 
+                 th:classappend="${msg.leido} ? ' leido' : ''">
+                <div class="msg-header">
+                    <div>
+                        <span class="msg-name" th:text="${msg.nombre}">Nombre</span>
+                        <span class="msg-contact" th:text="' | ' + ${msg.contacto}"> | contacto</span>
+                    </div>
+                    <span class="msg-date" th:text="${#temporals.format(msg.fecha, 'dd/MM/yyyy HH:mm')}">Fecha</span>
+                </div>
+                <p class="msg-text" th:text="${msg.mensaje}">Mensaje...</p>
+                <div class="msg-actions" th:if="${!msg.leido}">
+                    <a th:href="@{/admin/mensajes/leer/{id}(id=${msg.id})}" class="btn-mark">Marcar como leído</a>
+                </div>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(mensajes)}" style="text-align: center; color: #888; padding: 3rem;">
+                No hay mensajes
+            </div>
+        </main>
+    </div>
+</body>
+</html>

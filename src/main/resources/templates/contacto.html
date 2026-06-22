@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto — Saoco Perfumes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a th:href="@{/}" class="logo">
+                <span class="logo-text">saoc<span class="logo-accent">o</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a th:href="@{/}">INICIO</a></li>
+                <li><a th:href="@{/catalogo}">CATÁLOGO</a></li>
+                <li><a th:href="@{/contacto}" class="active">CONTACTO</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="search-box">
+                    <input type="text" placeholder="BUSCAR">
+                    <span class="search-icon">&#128269;</span>
+                </div>
+                <div class="cart-icon" id="cartIcon">
+                    <span>&#128722;</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <a th:href="@{/login}" class="nav-login" title="Iniciar sesión">
+                    <span>&#128100;</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER CONTACTO -->
+    <section class="contacto-header">
+        <div class="container">
+            <h1 class="page-title">Contáctanos</h1>
+            <p class="page-subtitle">Estamos aquí para ayudarte a encontrar tu fragancia ideal</p>
+        </div>
+    </section>
+
+    <!-- CONTACTO GRID -->
+    <section class="contacto-section">
+        <div class="container">
+            <div class="contacto-grid">
+                <div class="contacto-info">
+                    <h3>¿Tienes dudas?</h3>
+                    <p>Escríbenos y te ayudamos a encontrar tu fragancia ideal. Atendemos por WhatsApp, email o en nuestras tiendas.</p>
+                    
+                    <div class="contacto-datos">
+                        <div class="contacto-item">
+                            <span class="contacto-icon">&#128241;</span>
+                            <div>
+                                <strong>WhatsApp</strong>
+                                <span>+57 3XX XXX XXXX</span>
+                            </div>
+                        </div>
+                        <div class="contacto-item">
+                            <span class="contacto-icon">&#128231;</span>
+                            <div>
+                                <strong>Email</strong>
+                                <span>hola@saocoperfumes.com</span>
+                            </div>
+                        </div>
+                        <div class="contacto-item">
+                            <span class="contacto-icon">&#127978;</span>
+                            <div>
+                                <strong>Bogotá</strong>
+                                <span>Envíos a domicilio</span>
+                            </div>
+                        </div>
+                        <div class="contacto-item">
+                            <span class="contacto-icon">&#127978;</span>
+                            <div>
+                                <strong>Cúcuta</strong>
+                                <span>Tienda física + envíos</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="https://wa.me/573XXXXXXXXX?text=Hola%20Saoco%20Perfumes" class="btn btn-whatsapp" target="_blank">
+                        <span>&#128172;</span> Escribir por WhatsApp
+                    </a>
+                </div>
+                
+                <div class="contacto-form-wrapper">
+                    <div th:if="${confirmacion}" class="alerta-exito" id="alertaExito">
+                        <span th:text="${confirmacion}">Gracias...</span>
+                    </div>
+                    
+                    <form th:action="@{/contacto}" method="post" class="contacto-form" id="formContacto">
+                        <div class="form-group">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre completo">
+                        </div>
+                        <div class="form-group">
+                            <label for="contacto">Correo o WhatsApp</label>
+                            <input type="text" id="contacto" name="contacto" required placeholder="email@ejemplo.com o +57...">
+                        </div>
+                        <div class="form-group">
+                            <label for="mensaje">Mensaje</label>
+                            <textarea id="mensaje" name="mensaje" rows="5" required placeholder="¿Qué perfume te interesa? ¿Necesitas asesoría?"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Enviar Mensaje</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-logo">saoco</p>
+            <p>Fragancias árabes en Colombia &#127464;&#127476;</p>
+            <p class="footer-copy"> 2024 Saoco Perfumes. Bogotá & Cúcuta.</p>
+        </div>
+    </footer>
+
+    <!-- CARRITO SIDEBAR -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Tu Carrito</h3>
+            <button type="button" class="cart-close" id="cartClose">&#10005;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p class="cart-empty">Tu carrito está vacío</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">$0</span>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" id="btnCheckout">Hacer compra</button>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <!-- MODAL CHECKOUT -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-checkout">
+            <button type="button" class="modal-close" onclick="cerrarModalCheckout()">&#10005;</button>
+            <h3 class="modal-title">Entrega</h3>
+            
+            <div class="modal-field full-width">
+                <label>País / Región</label>
+                <select disabled>
+                    <option>Colombia</option>
+                </select>
+            </div>
+            
+            <div class="modal-row">
+                <div class="modal-field">
+                    <label>Nombre <span class="required">*</span></label>
+                    <input type="text" id="modalNombre" placeholder="Nombre" required>
+                </div>
+                <div class="modal-field">
+                    <label>Apellidos <span class="required">*</span></label>
+                    <input type="text" id="modalApellidos" placeholder="Apellidos" required>
+                </div>
+            </div>
+            
+            <div class="modal-field full-width">
+                <label>Dirección <span class="required">*</span></label>
+                <input type="text" id="modalDireccion" placeholder="Dirección" required>
+            </div>
+            
+            <div class="modal-field full-width">
+                <label>Casa, apartamento, etc. (opcional)</label>
+                <input type="text" id="modalCasa" placeholder="Apto 101, Torre 2...">
+            </div>
+            
+            <div class="modal-row">
+                <div class="modal-field">
+                    <label>Ciudad <span class="required">*</span></label>
+                    <input type="text" id="modalCiudad" placeholder="Ciudad" required>
+                </div>
+                <div class="modal-field">
+                    <label>Provincia / Estado <span class="required">*</span></label>
+                    <select id="modalProvincia" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="Amazonas">Amazonas</option>
+                        <option value="Antioquia">Antioquia</option>
+                        <option value="Arauca">Arauca</option>
+                        <option value="Atlántico">Atlántico</option>
+                        <option value="Bogotá D.C.">Bogotá D.C.</option>
+                        <option value="Bolívar">Bolívar</option>
+                        <option value="Boyacá">Boyacá</option>
+                        <option value="Caldas">Caldas</option>
+                        <option value="Caquetá">Caquetá</option>
+                        <option value="Casanare">Casanare</option>
+                        <option value="Cauca">Cauca</option>
+                        <option value="Cesar">Cesar</option>
+                        <option value="Chocó">Chocó</option>
+                        <option value="Córdoba">Córdoba</option>
+                        <option value="Cundinamarca">Cundinamarca</option>
+                        <option value="Guainía">Guainía</option>
+                        <option value="Guaviare">Guaviare</option>
+                        <option value="Huila">Huila</option>
+                        <option value="La Guajira">La Guajira</option>
+                        <option value="Magdalena">Magdalena</option>
+                        <option value="Meta">Meta</option>
+                        <option value="Nariño">Nariño</option>
+                        <option value="Norte de Santander">Norte de Santander</option>
+                        <option value="Putumayo">Putumayo</option>
+                        <option value="Quindío">Quindío</option>
+                        <option value="Risaralda">Risaralda</option>
+                        <option value="San Andrés y Providencia">San Andrés y Providencia</option>
+                        <option value="Santander">Santander</option>
+                        <option value="Sucre">Sucre</option>
+                        <option value="Tolima">Tolima</option>
+                        <option value="Valle del Cauca">Valle del Cauca</option>
+                        <option value="Vaupés">Vaupés</option>
+                        <option value="Vichada">Vichada</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="modal-row">
+                <div class="modal-field">
+                    <label>Código postal (opcional)</label>
+                    <input type="text" id="modalCodigo" placeholder="Código postal">
+                </div>
+                <div class="modal-field">
+                    <label>Teléfono <span class="required">*</span></label>
+                    <input type="tel" id="modalTelefono" placeholder="300 123 4567" required>
+                </div>
+            </div>
+            
+            <div class="modal-total">
+                <span class="modal-total-label">Total</span>
+                <span class="modal-total-amount" id="modalTotal">$0</span>
+            </div>
+            
+            <button type="button" class="btn-hacer-pedido" onclick="hacerPedidoModal()">Hacer pedido</button>
+        </div>
+    </div>
+
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>
