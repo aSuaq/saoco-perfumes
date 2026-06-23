@@ -34,19 +34,19 @@ public class MainController {
         return "index";
     }
 
-    // MODIFICADO: Ahora con paginación
+    
     @GetMapping("/catalogo")
     public String catalogo(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String categoria,
             Model model) {
         
-        // 12 productos por página, ordenados por id ascendente
+        
         Pageable pageable = PageRequest.of(page, 12, Sort.by("id").ascending());
         
         Page<Producto> productosPage;
         
-        // Si hay categoría, filtra por categoría. Si no, muestra todos los disponibles
+        
         if (categoria != null && !categoria.isEmpty()) {
             productosPage = productoRepository.findByCategoria(categoria, pageable);
             model.addAttribute("categoriaSeleccionada", categoria);
