@@ -582,6 +582,14 @@ h1, h2, h3, .logo-text, .hero-title, .page-title, .section-title {
     flex-wrap: wrap;
 }
 
+/* NUEVO: Estilos para filtros como enlaces */
+.filtros a.filtro-btn {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .filtro-btn {
     padding: 0.6rem 1.5rem;
     background: var(--white);
@@ -609,6 +617,61 @@ h1, h2, h3, .logo-text, .hero-title, .page-title, .section-title {
 
 .producto-card.hidden {
     display: none;
+}
+
+/* ============================================
+   PAGINACIÓN — NUEVO
+   ============================================ */
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 40px;
+    padding: 20px 0;
+}
+
+.pag-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--white);
+    border: 1px solid var(--border-light);
+    color: var(--burgundy);
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.pag-btn:hover {
+    background: var(--burgundy);
+    border-color: var(--burgundy);
+    color: var(--white);
+}
+
+.pag-info {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pag-info strong {
+    color: var(--burgundy);
+    font-weight: 600;
+}
+
+.pag-total {
+    margin-left: 4px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
 
 /* ============================================
@@ -1083,5 +1146,16 @@ h1, h2, h3, .logo-text, .hero-title, .page-title, .section-title {
 
     .modal-row {
         grid-template-columns: 1fr;
+    }
+
+    /* NUEVO: Responsive paginación */
+    .paginacion {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .pag-btn {
+        width: 100%;
+        justify-content: center;
     }
 }

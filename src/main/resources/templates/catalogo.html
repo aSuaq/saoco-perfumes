@@ -44,12 +44,24 @@
     <section class="filtros-section">
         <div class="container">
             <div class="filtros">
-                <button class="filtro-btn active" data-categoria="todos">Todos</button>
-                <button class="filtro-btn" data-categoria="Árabes">Árabes</button>
-                <button class="filtro-btn" data-categoria="Amaderados">Amaderados</button>
-                <button class="filtro-btn" data-categoria="Dulces">Dulces</button>
-                <button class="filtro-btn" data-categoria="Florales">Florales</button>
-                <button class="filtro-btn" data-categoria="Cítricos">Cítricos</button>
+                <a th:href="@{/catalogo}" 
+                   th:classappend="${categoriaSeleccionada == null} ? ' active' : ''"
+                   class="filtro-btn">Todos</a>
+                <a th:href="@{/catalogo(categoria='Árabes')}" 
+                   th:classappend="${categoriaSeleccionada == 'Árabes'} ? ' active' : ''"
+                   class="filtro-btn">Árabes</a>
+                <a th:href="@{/catalogo(categoria='Amaderados')}" 
+                   th:classappend="${categoriaSeleccionada == 'Amaderados'} ? ' active' : ''"
+                   class="filtro-btn">Amaderados</a>
+                <a th:href="@{/catalogo(categoria='Dulces')}" 
+                   th:classappend="${categoriaSeleccionada == 'Dulces'} ? ' active' : ''"
+                   class="filtro-btn">Dulces</a>
+                <a th:href="@{/catalogo(categoria='Florales')}" 
+                   th:classappend="${categoriaSeleccionada == 'Florales'} ? ' active' : ''"
+                   class="filtro-btn">Florales</a>
+                <a th:href="@{/catalogo(categoria='Cítricos')}" 
+                   th:classappend="${categoriaSeleccionada == 'Cítricos'} ? ' active' : ''"
+                   class="filtro-btn">Cítricos</a>
             </div>
         </div>
     </section>
@@ -90,6 +102,29 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- NUEVO: PAGINACIÓN -->
+            <div class="paginacion" th:if="${totalPaginas > 1}">
+                <a th:if="${tieneAnterior}" 
+                   th:href="@{/catalogo(page=${paginaActual - 1}, categoria=${categoriaSeleccionada})}"
+                   class="pag-btn pag-anterior">
+                    ← Anterior
+                </a>
+                
+                <span class="pag-info">
+                    Página <strong th:text="${paginaActual + 1}">1</strong> 
+                    de <strong th:text="${totalPaginas}">5</strong>
+                    <span class="pag-total" th:text="'(' + ${totalProductos} + ' productos)'">(36 productos)</span>
+                </span>
+                
+                <a th:if="${tieneSiguiente}" 
+                   th:href="@{/catalogo(page=${paginaActual + 1}, categoria=${categoriaSeleccionada})}"
+                   class="pag-btn pag-siguiente">
+                    Siguiente →
+                </a>
+            </div>
+            <!-- FIN PAGINACIÓN -->
+            
         </div>
     </section>
 

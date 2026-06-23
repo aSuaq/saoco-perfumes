@@ -1,6 +1,10 @@
 package com.saoco.perfumes;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,10 +34,33 @@ public class MainController {
         return "index";
     }
 
+    // MODIFICADO: Ahora con paginación
     @GetMapping("/catalogo")
-    public String catalogo(Model model) {
-        List<Producto> productos = productoRepository.findAll();
-        model.addAttribute("productos", productos);
+    public String catalogo(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String categoria,
+            Model model) {
+        
+        // 12 productos por página, ordenados por id ascendente
+        Pageable pageable = PageRequest.of(page, 12, Sort.by("id").ascending());
+        
+        Page<Producto> productosPage;
+        
+        // Si hay categoría, filtra por categoría. Si no, muestra todos los disponibles
+        if (categoria != null && !categoria.isEmpty()) {
+            productosPage = productoRepository.findByCategoria(categoria, pageable);
+            model.addAttribute("categoriaSeleccionada", categoria);
+        } else {
+            productosPage = productoRepository.findByDisponibleTrue(pageable);
+        }
+        
+        model.addAttribute("productos", productosPage.getContent());
+        model.addAttribute("paginaActual", page);
+        model.addAttribute("totalPaginas", productosPage.getTotalPages());
+        model.addAttribute("totalProductos", productosPage.getTotalElements());
+        model.addAttribute("tieneSiguiente", productosPage.hasNext());
+        model.addAttribute("tieneAnterior", productosPage.hasPrevious());
+        
         return "catalogo";
     }
 
